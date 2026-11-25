@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" font-family="Segoe UI, Arial, sans-serif">
+  <defs>
+    <marker id="a" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#1a237e"/></marker>
+    <style>.b{fill:#fff;stroke:#1a237e;stroke-width:3;rx:18}.t{font-size:26px;font-weight:700;fill:#1a237e;text-anchor:middle}.s{font-size:18px;fill:#455a64;text-anchor:middle}.l{stroke:#1a237e;stroke-width:4;marker-end:url(#a);fill:none}.n{font-size:20px;font-weight:700;fill:#fff;text-anchor:middle}</style>
+  </defs>
+  <rect width="1600" height="900" fill="#e8eaf6"/>
+  <text x="800" y="70" font-size="42" font-weight="800" fill="#1a237e" text-anchor="middle">Nexura Cloud — Agent vocal IA de qualification (appels sortants)</text>
+  <text x="800" y="105" class="s" font-size="22">100 % code : Google Apps Script + API Vapi — aucun Make / Zapier / n8n</text>
+
+  <!-- Ligne 1 -->
+  <rect class="b" x="60" y="170" width="300" height="130"/><text class="t" x="210" y="225">Google Form</text><text class="s" x="210" y="260">Demande de démo + consentement</text>
+  <rect class="b" x="450" y="170" width="300" height="130"/><text class="t" x="600" y="225">Apps Script</text><text class="s" x="600" y="255">onFormSubmit → Leads</text><text class="s" x="600" y="280">Plage légale lun-ven 10-13h/14-20h</text>
+  <rect class="b" x="840" y="170" width="300" height="130"/><text class="t" x="990" y="225">API Vapi</text><text class="s" x="990" y="255">POST /call immédiat</text><text class="s" x="990" y="280">variables : prénom, activité</text>
+  <rect class="b" x="1230" y="170" width="300" height="130"/><text class="t" x="1380" y="225">Agent « Léa »</text><text class="s" x="1380" y="255">Annonce IA · BANT</text><text class="s" x="1380" y="280">ElevenLabs + LLM</text>
+  <path class="l" d="M360 235 H445"/><path class="l" d="M750 235 H835"/><path class="l" d="M1140 235 H1225"/>
+
+  <!-- Ligne 2 -->
+  <rect class="b" x="1230" y="400" width="300" height="130"/><text class="t" x="1380" y="455">Webhook POST</text><text class="s" x="1380" y="485">end-of-call-report + secret</text>
+  <path class="l" d="M1380 300 V395"/>
+  <rect class="b" x="840" y="400" width="300" height="130"/><text class="t" x="990" y="455">doPost()</text><text class="s" x="990" y="485">Validation · dédoublonnage</text><text class="s" x="990" y="510">Score /100 → SQL / Nurturing</text>
+  <path class="l" d="M1230 465 H1145"/>
+  <rect class="b" x="450" y="400" width="300" height="130"/><text class="t" x="600" y="455">Google Sheet</text><text class="s" x="600" y="485">Leads · Calls · Logs</text><text class="s" x="600" y="510">Dashboard KPI</text>
+  <path class="l" d="M840 465 H755"/>
+
+  <!-- Ligne 3 : actions -->
+  <rect class="b" x="60" y="650" width="320" height="120"/><text class="t" x="220" y="705">Google Calendar</text><text class="s" x="220" y="735">Outil book_meeting</text>
+  <rect class="b" x="440" y="650" width="320" height="120"/><text class="t" x="600" y="705">SMS Twilio</text><text class="s" x="600" y="735">Après un SQL</text>
+  <rect class="b" x="820" y="650" width="320" height="120"/><text class="t" x="980" y="705">Email horaire</text><text class="s" x="980" y="735">MailApp → commerciaux</text>
+  <rect class="b" x="1200" y="650" width="340" height="120"/><text class="t" x="1370" y="705">Transfert d'appel</text><text class="s" x="1370" y="735">Vers le mobile du commercial</text>
+  <path class="l" d="M600 530 V645" /><path class="l" d="M990 530 L990 645"/>
+  <path class="l" d="M500 530 L240 645"/>
+  <path class="l" d="M1380 300 C1700 450 1500 560 1400 645" stroke-dasharray="8 6"/>
+
+  <rect x="60" y="400" width="320" height="130" rx="18" fill="#c62828"/>
+  <text class="n" x="220" y="450">Conformité</text><text class="n" x="220" y="480" font-size="17">Consentement 1 an / preuve 3 ans</text><text class="n" x="220" y="505" font-size="17">Opposition = plus jamais rappelé</text>
+  <text x="800" y="860" class="s" font-size="20">Retries si pas de réponse · Secret partagé · Logs · Score calculé côté code (déterministe)</text>
+</svg>
