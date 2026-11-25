@@ -107,7 +107,8 @@ function saveCall_(p) {
     p.call_id, new Date(), firstName, c.last_name || lead.last_name || '', company,
     q.need_summary || '', q.authority_level || '', q.timeline || '',
     q.budget_confirmed === true || String(q.budget_confirmed).toLowerCase() === 'true',
-    status, noAnswer ? 0 : s.score, duration, m.full_summary || '', transparency, '', false
+    status, noAnswer ? 0 : s.score, duration, m.full_summary || '', transparency,
+    CacheService.getScriptCache().get('meeting_' + p.call_id) || '', false
   ]);
 
   if (lead._row) afterCallLeadUpdate_(lead, p.call_id, status, optOut, noAnswer);

@@ -13,6 +13,12 @@ function handleToolCalls_(msg) {
     var fn = tc.function || tc;
     var args = fn.arguments || {};
     if (typeof args === 'string') { try { args = JSON.parse(args); } catch (e) { args = {}; } }
+    // Le LLM ne connaît pas call_id / lead_id : on les prend dans le message Vapi.
+    var call = msg.call || {};
+    var vars = (call.assistantOverrides && call.assistantOverrides.variableValues) || {};
+    args.call_id = call.id || args.call_id;
+    args.lead_id = vars.lead_id || args.lead_id;
+    args.company_name = args.company_name || vars.company_name;
     var out;
     try {
       if (fn.name === 'get_slots') out = getFreeSlots_(3);
@@ -54,9 +60,9 @@ function bookMeeting_(a) {
   if (a.email) opts.guests = a.email;
   opts.sendInvites = !!a.email;
   cal.createEvent('Démo Nexura Cloud — ' + (a.company_name || ''), start, end, opts);
-  var calls = sheet_(CONFIG.SHEETS.CALLS);
-  var row = rows_(calls).filter(function (r) { return r.call_id === a.call_id; })[0];
-  if (row) updateRow_(calls, row._row, { meeting_at: start });
+  // Le compte rendu d'appel (end-of-call-report) arrive APRÈS ce tool-call :
+  // on mémorise le RDV 6 h dans le cache, saveCall_ le récupère.
+  if (a.call_id) CacheService.getScriptCache().put('meeting_' + a.call_id, start.toISOString(), 21600);
   return 'Rendez-vous confirmé le ' + Utilities.formatDate(start, CONFIG.TIMEZONE, "EEEE d MMMM 'à' HH'h'mm");
 }
 
