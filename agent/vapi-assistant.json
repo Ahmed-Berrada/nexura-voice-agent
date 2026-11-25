@@ -1,0 +1,51 @@
+{
+  "_comment": "Config de l'assistant Vapi. Remplacer __WEBAPP_URL__ et __SECRET__ avant import (POST https://api.vapi.ai/assistant). Le prompt complet est dans system-prompt.md (à coller dans model.messages[0].content).",
+  "name": "Nexura - Lea (qualification sortante)",
+  "firstMessage": "Bonjour {{first_name}}, ici Léa, l'assistante virtuelle de Nexura Cloud. Je suis une intelligence artificielle. Vous avez demandé une démo il y a quelques instants, avez-vous deux minutes pour que je vous pose quelques questions ?",
+  "voicemailMessage": "Bonjour {{first_name}}, c'est Léa, l'assistante virtuelle de Nexura Cloud. Je vous appelle suite à votre demande de démo. Un expert vous recontactera. Bonne journée !",
+  "endCallMessage": "Merci pour votre temps, belle journée !",
+  "model": {
+    "provider": "openai",
+    "model": "gpt-4o-mini",
+    "temperature": 0.3,
+    "messages": [{ "role": "system", "content": "<COLLER agent/system-prompt.md>" }],
+    "tools": [
+      { "type": "transferCall",
+        "destinations": [{ "type": "number", "number": "{{sales_mobile}}", "message": "Je vous passe un expert Nexura." }] },
+      { "type": "function", "function": { "name": "get_slots", "description": "Renvoie 3 créneaux libres pour une démo.", "parameters": { "type": "object", "properties": {} } },
+        "server": { "url": "__WEBAPP_URL__?secret=__SECRET__" } },
+      { "type": "function", "function": { "name": "book_meeting", "description": "Réserve la démo dans l'agenda.",
+        "parameters": { "type": "object", "properties": {
+          "start_iso": { "type": "string", "description": "Début ISO 8601" },
+          "email": { "type": "string" }, "company_name": { "type": "string" }, "call_id": { "type": "string" } },
+          "required": ["start_iso"] } },
+        "server": { "url": "__WEBAPP_URL__?secret=__SECRET__" } },
+      { "type": "function", "function": { "name": "mark_opt_out", "description": "Le prospect refuse d'être rappelé.",
+        "parameters": { "type": "object", "properties": { "lead_id": { "type": "string" } }, "required": ["lead_id"] } },
+        "server": { "url": "__WEBAPP_URL__?secret=__SECRET__" } }
+    ]
+  },
+  "voice": { "provider": "11labs", "voiceId": "<voix française ElevenLabs>" },
+  "transcriber": { "provider": "deepgram", "model": "nova-2", "language": "fr" },
+  "maxDurationSeconds": 420,
+  "silenceTimeoutSeconds": 20,
+  "serverUrl": "__WEBAPP_URL__?secret=__SECRET__",
+  "serverMessages": ["end-of-call-report", "tool-calls"],
+  "analysisPlan": {
+    "summaryPrompt": "Résume l'appel en 2 phrases en français.",
+    "structuredDataPlan": {
+      "enabled": true,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "need_summary": { "type": "string" },
+          "authority_level": { "type": "string", "description": "Rôle + décideur/influenceur/utilisateur" },
+          "timeline": { "type": "string", "description": "ex: < 1 mois, 1-3 mois, 3-6 mois, > 6 mois" },
+          "budget_confirmed": { "type": "boolean" },
+          "ai_transparency_accepted": { "type": "boolean" },
+          "opt_out": { "type": "boolean" }
+        }
+      }
+    }
+  }
+}
