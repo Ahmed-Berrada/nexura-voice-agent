@@ -112,7 +112,11 @@ function saveCall_(p) {
   ]);
 
   if (lead._row) afterCallLeadUpdate_(lead, p.call_id, status, optOut, noAnswer);
-  if (status === 'SQL') { try { sendPostCallSms_(lead, firstName); } catch (e) { log_('WARN', 'SMS échoué', e.message); } }
+  if (status === 'SQL') {
+    try {
+      if (sendPostCallSms_(lead, firstName)) updateRow_(calls, calls.getLastRow(), { sms_sent: true });
+    } catch (e) { log_('WARN', 'SMS échoué', e.message); }
+  }
   return { ok: true, call_id: p.call_id, status: status, score: s.score };
 }
 

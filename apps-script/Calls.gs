@@ -15,7 +15,7 @@ function onFormSubmit(e) {
       first_name: g('Prénom'), last_name: g('Nom'), company_name: g('Entreprise'),
       phone: g('Téléphone'), email: g('Email'), company_size: g('Effectif'),
       company_activity: g('Activité'),
-      consent_given: /oui|yes|true|j'accepte/i.test(g('Consentement'))
+      consent_given: /oui|yes|true|accepte/i.test(g('Consentement')) // la case contient « J'accepte… » (apostrophe droite ou typographique)
     });
     dispatchLead_(lead);
   } catch (err) { log_('ERROR', 'onFormSubmit: ' + err.message, err.stack); }

@@ -77,14 +77,17 @@ function markOptOut_(leadId) {
 /** SMS de confirmation via l'API REST Twilio (optionnel : ignoré si non configuré). */
 function sendPostCallSms_(lead, firstName) {
   var sid = prop_('TWILIO_SID'), tok = prop_('TWILIO_TOKEN'), from = prop_('TWILIO_FROM');
-  if (!sid || !tok || !from || !lead || !lead.phone) return;
+  if (!sid || !tok || !from || !lead || !lead.phone) return false;
   var body = 'Bonjour ' + firstName + ', merci pour votre échange avec l\'assistant IA de Nexura Cloud. ' +
              'Un expert vous recontacte très vite. Répondez STOP pour ne plus être contacté.';
-  UrlFetchApp.fetch('https://api.twilio.com/2010-04-01/Accounts/' + sid + '/Messages.json', {
+  var res = UrlFetchApp.fetch('https://api.twilio.com/2010-04-01/Accounts/' + sid + '/Messages.json', {
     method: 'post', muteHttpExceptions: true,
     headers: { Authorization: 'Basic ' + Utilities.base64Encode(sid + ':' + tok) },
     payload: { To: lead.phone, From: from, Body: body }
   });
+  var ok = res.getResponseCode() < 300;
+  if (!ok) log_('WARN', 'Twilio ' + res.getResponseCode(), res.getContentText());
+  return ok;
 }
 
 /** Email horaire : récap des appels de la dernière heure (SQL en tête). */

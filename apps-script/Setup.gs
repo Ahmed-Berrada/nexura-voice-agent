@@ -7,8 +7,10 @@ function setupSheet() {
   ensureSheet_(ss, CONFIG.SHEETS.LEADS, LEAD_COLS);
   ensureSheet_(ss, CONFIG.SHEETS.CALLS, CALL_COLS);
   ensureSheet_(ss, CONFIG.SHEETS.LOGS, ['timestamp', 'level', 'message', 'details']);
+  // Téléphone en texte brut : sinon Sheets transforme "+336..." en nombre/formule.
+  ss.getSheetByName(CONFIG.SHEETS.LEADS).getRange('F:F').setNumberFormat('@');
   buildDashboard_(ss);
-  SpreadsheetApp.getUi && SpreadsheetApp.flush();
+  SpreadsheetApp.flush();
 }
 
 /** Crée l'onglet s'il n'existe pas, pose les en-têtes et les fige. */
