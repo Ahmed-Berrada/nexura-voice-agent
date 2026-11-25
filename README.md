@@ -48,3 +48,24 @@ Vapi (US) choisi pour sa simplicité d'API et ses webhooks natifs. Alternatives 
 
 ## Optionnel non implémenté
 Création d'un numéro par appel ; enrichissement automatique LinkedIn (le champ `Activité` du formulaire sert de source).
+
+## Dépannage
+| Symptôme | Cause probable | Solution |
+|---|---|---|
+| Webhook répond `unauthorized` | Secret absent/différent, ou `?secret=` oublié dans l'URL Vapi | Vérifier `WEBHOOK_SECRET` dans les Script Properties et l'URL du `serverUrl` |
+| Rien n'arrive dans `Calls` | Déploiement obsolète ou accès non « Tout le monde » | *Déployer > Gérer les déploiements > Modifier > Nouvelle version* ; ouvrir l'URL `/exec` : doit afficher `alive` |
+| Après modification du code, comportement inchangé | La Web App sert l'ancienne version | Redéployer une **nouvelle version** (l'URL reste la même) |
+| `Onglet manquant : Leads` | `setupSheet()` non exécuté | Le lancer depuis l'éditeur |
+| Erreur d'autorisation (Calendar, Mail, UrlFetch) | Scopes non accordés | Exécuter une fonction concernée à la main une fois (ex. `sendHourlyDigest`) et accepter |
+| Lead bloqué en `Queued` | Hors plage légale, ou trigger absent | Normal hors 10h-13h / 14h-20h lun-ven ; sinon relancer `installTriggers()` |
+| Lead en `No consent` | Case non cochée, ou consentement > 1 an | Obligatoire légalement : ne pas contourner |
+| Lead en `Invalid phone` | Numéro non convertible en E.164 | Corriger le numéro puis remettre le statut à `New` |
+| Vapi `401` dans `Logs` | Mauvaise `VAPI_API_KEY` (utiliser la clé **privée**) | Corriger la propriété |
+| Vapi `400` à l'appel | `phoneNumberId` ou `assistantId` incorrect | Copier les ids depuis le dashboard Vapi |
+| L'agent ne propose pas de créneaux | Réponse du tool-call non lue (redirection 302 des Web Apps sur POST) | Voir Logs Vapi : si la réponse est vide, ajouter un relais (ex. petit proxy qui suit la redirection) ; le webhook de fin d'appel, lui, est bien traité |
+| Doublons dans `Calls` | Impossible : dédoublonnage sur `call_id` | Si `call_id` change à chaque envoi, vérifier la config Vapi |
+| Pas d'email horaire | `SALES_EMAIL` vide, ou aucun appel dans l'heure | Normal sans appel ; sinon vérifier la propriété et le trigger |
+| Pas de SMS | Twilio non configuré, ou numéro non vérifié (compte d'essai) | Voir `Logs` (`Twilio <code>`) |
+| `Max attempts` | 3 tentatives sans réponse | Augmenter `MAX_ATTEMPTS` ou rappeler manuellement |
+
+Toujours commencer par l'onglet **Logs** de la Sheet, puis *Exécutions* dans Apps Script, puis les *Logs* d'appel dans le dashboard Vapi.
