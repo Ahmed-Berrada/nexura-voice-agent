@@ -21,7 +21,7 @@ Un lead remplit le formulaire de démo → **Apps Script** vérifie le consentem
 ## Installation pas à pas
 1. **Google Sheet** : créer une feuille vide → *Extensions > Apps Script* → créer un fichier par `.gs` du dossier `apps-script/` (copier-coller).
 2. Exécuter `setupSheet()` (autoriser les droits) : création des onglets `Leads`, `Calls`, `Logs`, `Dashboard`.
-3. **Script Properties** (*Paramètres du projet*) : `WEBHOOK_SECRET` (chaîne aléatoire longue), `SALES_EMAIL`, `SALES_MOBILE` (+33…), puis plus tard `VAPI_API_KEY`, `VAPI_ASSISTANT_ID`, `VAPI_PHONE_NUMBER_ID`, et optionnel `TWILIO_SID/TOKEN/FROM`.
+3. **Secrets** : copier `.env.example` en `.env` (ignoré par git, dépôt public), le remplir, puis `node tests/push-env.js` génère une fonction `loadEnv_()` à coller temporairement dans Apps Script, l'exécuter, puis la supprimer. Ou saisir à la main les **Script Properties** (*Paramètres du projet*) : `WEBHOOK_SECRET` (chaîne aléatoire longue), `SALES_EMAIL`, `SALES_MOBILE` (+33…), puis plus tard `VAPI_API_KEY`, `VAPI_ASSISTANT_ID`, `VAPI_PHONE_NUMBER_ID`, et optionnel `TWILIO_SID/TOKEN/FROM`.
 4. **Déployer** : *Déployer > Nouveau déploiement > Application Web* — Exécuter en tant que *moi*, accès *Tout le monde*. Copier l'URL `…/exec`.
 5. Tester : `./tests/test-webhook.sh "<URL>" "<SECRET>"` → une ligne SQL apparaît dans `Calls`.
 6. **Vapi** (vapi.ai, 5 $ offerts) : créer un numéro (ou importer Twilio), créer l'assistant à partir de `agent/vapi-assistant.json` (remplacer `__WEBAPP_URL__` et `__SECRET__`, coller le prompt, choisir une voix ElevenLabs FR). Reporter les 3 ids dans les Script Properties.
