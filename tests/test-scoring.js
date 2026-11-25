@@ -16,6 +16,15 @@ assert.strictEqual(r.status, 'Nurturing');
 r = s({ authority_level: 'utilisateur', timeline: '> 6 mois', budget_confirmed: false }, 30);
 assert.strictEqual(r.status, 'Nurturing'); assert.ok(r.score < 40);
 
+// "non décideur" ne doit pas compter comme décideur (30) mais comme influenceur (18)
+r = s({ authority_level: 'Responsable IT, non décideur', timeline: '< 1 mois', budget_confirmed: true }, 50);
+assert.strictEqual(r.score, 88); // 18 + 30 + 25 + 15
+
+// "12 mois" / "> 6 mois" => 0 point de délai
+assert.strictEqual(s({ authority_level: 'x', timeline: '12 mois', budget_confirmed: false }, 50).score, 15);
+assert.strictEqual(s({ authority_level: 'x', timeline: '> 6 mois', budget_confirmed: false }, 50).score, 15);
+assert.strictEqual(s({ authority_level: 'x', timeline: '1-3 mois', budget_confirmed: false }, 50).score, 33);
+
 // Payload vide ne plante pas
 r = s({}, undefined); assert.strictEqual(r.status, 'Nurturing');
 

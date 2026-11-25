@@ -18,17 +18,22 @@ function scoreLead_(q, companySize) {
   var pts = 0;
 
   // --- Autorité ---
-  if (/d[ée]cideur|directeur|dsi|rssi|ceo|dg|responsable|head|vp|cto|ciso/.test(authority)) pts += 30;
-  else if (/influen|manager|chef|lead/.test(authority)) pts += 18;
+  // La négation est testée en premier : "non décideur" ne doit pas valoir 30 pts.
+  var negated = /non[\s-]*d[ée]cideur|pas (le |un )?d[ée]cideur|ne d[ée]cide pas|n'est pas d[ée]cideur/.test(authority);
+  if (negated) pts += 18;
+  else if (/d[ée]cideur|directeur|\bdsi\b|rssi|\bceo\b|\bdg\b|responsable|head|\bvp\b|\bcto\b|ciso/.test(authority)) pts += 30;
+  else if (/influen|manager|chef|\blead\b/.test(authority)) pts += 18;
   else if (/utilisateur|analyste|ing[ée]nieur|stagiaire/.test(authority)) pts += 8;
 
   // --- Budget ---
   if (q.budget_confirmed === true || String(q.budget_confirmed).toLowerCase() === 'true') pts += 30;
 
   // --- Délai ---
-  if (/<\s*1|imm[ée]diat|ce mois|semaine|urgent/.test(timeline)) pts += 25;
-  else if (/1\s*[-à]\s*3|trimestre|[123]\s*mois/.test(timeline)) pts += 18;
-  else if (/3\s*[-à]\s*6|semestre|[456]\s*mois/.test(timeline)) pts += 8;
+  // Délais lointains testés en premier ("> 6 mois", "12 mois", "l'an prochain" => 0 pt).
+  if (/>\s*6|plus de 6|\b(7|8|9|10|11|12|18|24)\s*mois|ann[ée]e|an prochain|pas de date/.test(timeline)) pts += 0;
+  else if (/<\s*1|imm[ée]diat|ce mois|semaine|urgent/.test(timeline)) pts += 25;
+  else if (/\b1\s*[-à]\s*3|trimestre|\b[123]\s*mois/.test(timeline)) pts += 18;
+  else if (/\b3\s*[-à]\s*6|semestre|\b[456]\s*mois/.test(timeline)) pts += 8;
 
   // --- Cible (taille d'entreprise) ---
   if (!isNaN(size)) {
