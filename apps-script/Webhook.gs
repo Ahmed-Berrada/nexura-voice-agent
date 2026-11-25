@@ -101,6 +101,9 @@ function saveCall_(p) {
   var noAnswer = /voicemail|no-answer|busy|did-not-answer/i.test(String(p.ended_reason || '')) || (duration < 5 && !q.need_summary);
 
   var s = scoreLead_(q, lead.company_size);
+  // Refus de parler à une IA (appel décroché) : jamais SQL, score 0, aucun SMS.
+  var aiRefused = !noAnswer && !optOut && !transparency;
+  if (aiRefused) s = { score: 0, status: 'Nurturing' };
   var status = optOut ? 'Opposition' : (noAnswer ? 'No answer' : s.status);
 
   calls.appendRow([
