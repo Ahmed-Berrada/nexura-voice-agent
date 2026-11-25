@@ -1,0 +1,21 @@
+{
+  "call_id": "call_987654321",
+  "lead_id": "lead_ab12cd34",
+  "contact": {
+    "first_name": "Julien",
+    "last_name": "Martin",
+    "company_name": "Acme Corp"
+  },
+  "qualification": {
+    "need_summary": "Recherche une solution pour automatiser ses audits ISO 27001.",
+    "authority_level": "Directeur IT (décideur)",
+    "timeline": "< 1 mois",
+    "budget_confirmed": true,
+    "lead_status": "SQL"
+  },
+  "call_metadata": {
+    "duration_seconds": 165,
+    "full_summary": "Échange très fluide. Budget validé.",
+    "ai_transparency_accepted": true
+  }
+}
