@@ -41,7 +41,11 @@ function buildDashboard_(ss) {
     ['Oppositions (ne plus appeler)', '=COUNTIF(Leads!L2:L,"Opposition")'],
     ['Sans réponse', '=COUNTIF(Leads!L2:L,"No answer")']
   ];
-  sh.getRange(1, 1, rows.length, 2).setValues(rows);
+  // setFormulas (syntaxe anglaise, indépendante de la locale) : setValues casse
+  // les formules dans une Sheet en locale française (virgule = décimale).
+  sh.getRange(1, 1, rows.length, 1).setValues(rows.map(function (r) { return [r[0]]; }));
+  sh.getRange(1, 2).setValue(rows[0][1]);
+  sh.getRange(2, 2, rows.length - 1, 1).setFormulas(rows.slice(1).map(function (r) { return [r[1]]; }));
   sh.getRange(1, 1, 1, 2).setFontWeight('bold').setBackground('#1a237e').setFontColor('#fff');
   sh.getRange('B6').setNumberFormat('0%');
   sh.getRange('B9').setNumberFormat('0%');
