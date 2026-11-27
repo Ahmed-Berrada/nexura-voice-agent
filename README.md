@@ -31,6 +31,15 @@ Un lead remplit le formulaire de démo → **Apps Script** vérifie le consentem
 ## Utilisation
 Soumettre le formulaire (ou ajouter une ligne dans `Leads` avec `consent_given=TRUE`) : le téléphone sonne. Suivre les résultats dans `Calls` et `Dashboard`.
 
+### Mode démo gratuit (sans numéro de téléphone)
+Si `VAPI_PHONE_NUMBER_ID` est vide, le lead passe au statut `Ready (web call)`. Ensuite :
+1. Dans `Leads`, sélectionner la ligne, puis menu **Nexura > Lancer l'appel**.
+2. La page [`docs/call.html`](https://ahmed-berrada.github.io/nexura-voice-agent/call.html), hébergée sur GitHub Pages, s'ouvre avec les variables du lead. Elles passent dans le fragment `#` de l'URL, qui n'est jamais envoyé à un serveur.
+3. Saisir une fois la **clé publique** Vapi et l'Assistant ID. Ils sont stockés uniquement dans le navigateur.
+4. Lancer l'appel web, qui utilise le micro du navigateur. Le compte rendu arrive dans `Calls` comme pour un vrai appel.
+
+Les règles de conformité restent appliquées : opposition, consentement et plage horaire (avec une alerte de confirmation hors plage).
+
 ## Score /100 (calculé côté code)
 Autorité 30 · Budget 30 · Délai 25 · Cible 15. **≥ 70 ⇒ SQL**, sinon Nurturing. Micro-entreprise (< 5 salariés) ⇒ toujours Nurturing.
 
