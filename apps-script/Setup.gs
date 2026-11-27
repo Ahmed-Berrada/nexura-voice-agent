@@ -24,30 +24,43 @@ function ensureSheet_(ss, name, headers) {
   return sh;
 }
 
-/** Onglet Dashboard : KPI calculés par formules (aucun script requis). */
+/**
+ * Onglet Dashboard : KPI calculés EN SCRIPT puis écrits comme valeurs.
+ * (Les formules COUNTIF/IFERROR cassent selon la locale de la Sheet : virgule
+ * ou point-virgule comme séparateur. Les valeurs sont indépendantes de la locale.)
+ * Rafraîchi après chaque appel (saveCall_) et par processQueue.
+ */
 function buildDashboard_(ss) {
+  ss = ss || SpreadsheetApp.getActiveSpreadsheet();
   var sh = ss.getSheetByName(CONFIG.SHEETS.DASH) || ss.insertSheet(CONFIG.SHEETS.DASH);
-  sh.clear();
+  var leads = rows_(ss.getSheetByName(CONFIG.SHEETS.LEADS));
+  var calls = rows_(ss.getSheetByName(CONFIG.SHEETS.CALLS));
+  var count = function (arr, k, v) { return arr.filter(function (r) { return r[k] === v; }).length; };
+  var avg = function (k) {
+    var v = calls.map(function (r) { return Number(r[k]); }).filter(function (n) { return !isNaN(n); });
+    return v.length ? Math.round(v.reduce(function (a, b) { return a + b; }, 0) / v.length * 10) / 10 : 0;
+  };
+  var n = calls.length, sql = count(calls, 'lead_status', 'SQL');
+  var accepted = calls.filter(function (r) { return r.ai_transparency_accepted === true; }).length;
   var rows = [
     ['KPI', 'Valeur'],
-    ['Leads total', '=COUNTA(Leads!A2:A)'],
-    ['Appels traités', '=COUNTA(Calls!A2:A)'],
-    ['SQL', '=COUNTIF(Calls!J2:J,"SQL")'],
-    ['Nurturing', '=COUNTIF(Calls!J2:J,"Nurturing")'],
-    ['Taux SQL', '=IFERROR(B4/B3,0)'],
-    ['Score moyen', '=IFERROR(AVERAGE(Calls!K2:K),0)'],
-    ['Durée moyenne (s)', '=IFERROR(AVERAGE(Calls!L2:L),0)'],
-    ['Acceptation transparence IA', '=IFERROR(COUNTIF(Calls!N2:N,TRUE)/B3,0)'],
-    ['Oppositions (ne plus appeler)', '=COUNTIF(Leads!L2:L,"Opposition")'],
-    ['Sans réponse', '=COUNTIF(Leads!L2:L,"No answer")']
+    ['Leads total', leads.length],
+    ['Appels traités', n],
+    ['SQL', sql],
+    ['Nurturing', count(calls, 'lead_status', 'Nurturing')],
+    ['Taux SQL', n ? sql / n : 0],
+    ['Score moyen', avg('score')],
+    ['Durée moyenne (s)', avg('duration_seconds')],
+    ['Acceptation transparence IA', n ? accepted / n : 0],
+    ['Oppositions (ne plus appeler)', count(leads, 'status', 'Opposition')],
+    ['Sans réponse', count(leads, 'status', 'No answer')],
+    ['Dernière mise à jour', new Date()]
   ];
-  // setFormulas (syntaxe anglaise, indépendante de la locale) : setValues casse
-  // les formules dans une Sheet en locale française (virgule = décimale).
-  sh.getRange(1, 1, rows.length, 1).setValues(rows.map(function (r) { return [r[0]]; }));
-  sh.getRange(1, 2).setValue(rows[0][1]);
-  sh.getRange(2, 2, rows.length - 1, 1).setFormulas(rows.slice(1).map(function (r) { return [r[1]]; }));
+  sh.clear();
+  sh.getRange(1, 1, rows.length, 2).setValues(rows);
   sh.getRange(1, 1, 1, 2).setFontWeight('bold').setBackground('#1a237e').setFontColor('#fff');
   sh.getRange('B6').setNumberFormat('0%');
   sh.getRange('B9').setNumberFormat('0%');
+  sh.getRange('B12').setNumberFormat('dd/MM/yyyy HH:mm');
   sh.setColumnWidth(1, 260);
 }

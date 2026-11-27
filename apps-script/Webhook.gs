@@ -115,6 +115,7 @@ function saveCall_(p) {
   ]);
 
   if (lead._row) afterCallLeadUpdate_(lead, p.call_id, status, optOut, noAnswer);
+  try { buildDashboard_(); } catch (e) { log_('WARN', 'Dashboard', e.message); }
   if (status === 'SQL') {
     try {
       if (sendPostCallSms_(lead, firstName)) updateRow_(calls, calls.getLastRow(), { sms_sent: true });

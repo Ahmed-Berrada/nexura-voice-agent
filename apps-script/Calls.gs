@@ -90,6 +90,7 @@ function placeCall_(lead) {
 /** Trigger 5 min : relance les leads en file ou sans réponse. */
 function processQueue() {
   var now = new Date();
+  try { buildDashboard_(); } catch (e) { log_('WARN', 'Dashboard', e.message); }
   rows_(sheet_(CONFIG.SHEETS.LEADS)).forEach(function (l) {
     var due = l.next_attempt_at && new Date(l.next_attempt_at) <= now;
     if (due && ['Queued', 'No answer', 'Calling'].indexOf(l.status) >= 0) dispatchLead_(l);
