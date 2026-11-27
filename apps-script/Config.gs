@@ -23,7 +23,9 @@ var CONFIG = {
   RETRY_DELAY_MIN: 120,       // délai avant nouvel essai si pas de réponse
   CONSENT_MAX_AGE_DAYS: 365,  // validité du consentement : 1 an
   CONSENT_RETENTION_DAYS: 1095, // conservation de la preuve : 3 ans
-  MEETING_DURATION_MIN: 30
+  MEETING_DURATION_MIN: 30,
+  // Page d'appel web (mode démo gratuit, sans numéro de téléphone)
+  LAUNCHER_URL: 'https://ahmed-berrada.github.io/nexura-voice-agent/call.html'
 };
 
 /** Colonnes de l'onglet Leads (ordre = ordre dans la feuille). */

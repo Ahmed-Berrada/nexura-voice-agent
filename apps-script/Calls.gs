@@ -57,6 +57,12 @@ function placeCall_(lead) {
   var attempts = Number(lead.attempts || 0) + 1;
   var max = Number(prop_('MAX_ATTEMPTS') || 3);
   if (attempts > max) { updateRow_(sh, lead._row, { status: 'Max attempts' }); return; }
+  // Mode démo gratuit : pas de numéro sortant => l'appel se lance en web depuis le menu Nexura.
+  if (!prop_('VAPI_PHONE_NUMBER_ID')) {
+    updateRow_(sh, lead._row, { status: 'Ready (web call)' });
+    log_('INFO', 'Pas de numéro Vapi : lancer via menu Nexura > Lancer l\'appel', lead.lead_id);
+    return;
+  }
 
   var payload = {
     assistantId: prop_('VAPI_ASSISTANT_ID'),
