@@ -59,7 +59,13 @@ function handleVapiMessage_(msg) {
 function vapiToPayload_(msg) {
   var call = msg.call || {};
   var meta = (call.assistantOverrides && call.assistantOverrides.variableValues) || {};
+  // Vapi récent : artifact.structuredOutputs = { <id>: { name, result } }.
+  // Ancien format : analysis.structuredData. On accepte les deux.
   var sd = (msg.analysis && msg.analysis.structuredData) || {};
+  var outs = (msg.artifact && msg.artifact.structuredOutputs) || {};
+  Object.keys(outs).forEach(function (k) {
+    if (outs[k] && outs[k].name === 'qualification' && outs[k].result && typeof outs[k].result === 'object') sd = outs[k].result;
+  });
   return {
     call_id: call.id,
     lead_id: meta.lead_id,
