@@ -65,7 +65,9 @@ function vapiToPayload_(msg) {
     lead_id: meta.lead_id,
     ended_reason: msg.endedReason,
     contact: {
-      first_name: meta.first_name, last_name: meta.last_name, company_name: meta.company_name
+      // Appel web de test : pas de variableValues, on retombe sur ce que l'agent a extrait.
+      first_name: meta.first_name || sd.first_name, last_name: meta.last_name || sd.last_name,
+      company_name: meta.company_name || sd.company_name
     },
     qualification: {
       need_summary: sd.need_summary, authority_level: sd.authority_level, timeline: sd.timeline,
